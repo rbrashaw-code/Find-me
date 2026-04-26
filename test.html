@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Alexandra API Diagnostic</title>
+<style>
+body{font-family:monospace;background:#0a0a0a;color:#e0e0e0;padding:30px;max-width:700px}
+h2{color:#C9A96E;margin-bottom:20px}
+input{background:#222;border:1px solid #444;color:#fff;padding:10px 14px;width:100%;
+  border-radius:3px;font-size:13px;margin-bottom:10px;outline:none}
+button{background:#C9A96E;border:none;color:#000;padding:11px 24px;
+  border-radius:3px;cursor:pointer;font-size:13px;font-weight:600}
+pre{background:#161616;border:1px solid #333;border-left:3px solid #C9A96E;
+  padding:14px;border-radius:3px;white-space:pre-wrap;word-break:break-all;
+  font-size:12px;margin-top:16px;min-height:60px;line-height:1.6}
+.ok{color:#81C784}.err{color:#E57373}.warn{color:#FFB74D}
+label{font-size:11px;color:#888;letter-spacing:1px;text-transform:uppercase;
+  display:block;margin-bottom:5px}
+</style>
+</head>
+<body>
+<h2>Baroque Real Estate · API Diagnostic</h2>
+<label>Anthropic API Key</label>
+<input type="password" id="key" placeholder="sk-ant-api03-...">
+<button onclick="runTest()">Run Diagnostic</button>
+<pre id="out">Results will appear here…</pre>
+
+<script>
+async function runTest(){
+  const key = document.getElementById('key').value.trim();
+  const out = document.getElementById('out');
+  if(!key){out.innerHTML='<span class="err">Please enter your API key</span>';return;}
+
+  out.innerHTML = 'Step 1: Checking key format…\n';
+  out.innerHTML += `Key length: ${key.length} characters\n`;
+  out.innerHTML += `Key prefix: ${key.substring(0,20)}…\n\n`;
+
+  out.innerHTML += 'Step 2: Sending test request to Anthropic…\n';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5',
+        max_tokens: 20,
+        messages: [{ role: 'user', content: 'Say: API OK' }]
+      })
+    });
+
+    out.innerHTML += `HTTP Status: ${res.status} ${res.statusText}\n\n`;
+
+    const text = await res.text();
+    out.innerHTML += `Raw Response:\n${text}\n\n`;
+
+    try {
+      const data = JSON.parse(text);
+      if(data.content){
+        out.innerHTML += `<span class="ok">✓ SUCCESS — API key is working correctly!\n`;
+        out.innerHTML += `Response: ${data.content[0]?.text}</span>\n\n`;
+        out.innerHTML += `<span class="ok">Your API key works. Go back to the main tour page and paste it there.</span>`;
+      } else if(data.error){
+        out.innerHTML += `<span class="err">✗ API Error\nType: ${data.error.type}\nMessage: ${data.error.message}</span>`;
+      }
+    } catch(e){
+      out.innerHTML += `<span class="warn">Could not parse JSON response</span>`;
+    }
+
+  } catch(netErr){
+    out.innerHTML += `<span class="err">Network/CORS Error: ${netErr.message}\n\n`;
+    out.innerHTML += `This means the request was blocked before reaching Anthropic.\n`;
+    out.innerHTML += `Ensure you are on https:// (not http:// or file://)</span>`;
+  }
+}
+</script>
+</body>
+</html>

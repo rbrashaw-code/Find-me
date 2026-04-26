@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baroque Real Estate · Copperleaf Estate · AI Concierge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#C9A96E;--gl:#E8D5B0;--gd:#8B6914;--gdim:rgba(201,169,110,0.1);
+  --c0:#080808;--c1:#111;--c2:#181818;--c3:#202020;--c4:#2A2A2A;
+  --t1:#E0D8CC;--t2:#9E968B;--t3:#5A5650;
+  --b1:rgba(201,169,110,0.14);--b2:rgba(201,169,110,0.4);
+}
+html,body{height:100%;width:100%;background:var(--c0);color:var(--t1);font-family:'Montserrat',sans-serif;font-weight:300;overflow:hidden}
+.app{display:grid;grid-template-columns:260px 1fr 390px;grid-template-rows:54px 1fr;height:100vh;width:100vw}
+
+/* TOPBAR */
+.topbar{grid-column:1/-1;background:var(--c1);border-bottom:1px solid var(--b1);display:flex;align-items:center;padding:0 22px;gap:14px;z-index:10}
+.brand{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;letter-spacing:5px;color:var(--g);text-transform:uppercase;white-space:nowrap}
+.bsep{width:1px;height:18px;background:var(--b1)}
+.bsub{font-size:8px;letter-spacing:3px;color:var(--t3);text-transform:uppercase}
+.topbar-r{margin-left:auto}
+.badge{display:flex;align-items:center;gap:6px;background:var(--gdim);border:1px solid var(--b1);border-radius:20px;padding:4px 12px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--g)}
+.bdot{width:6px;height:6px;background:var(--g);border-radius:50%;animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* LEFT */
+.left{background:var(--c1);border-right:1px solid var(--b1);display:flex;flex-direction:column;overflow:hidden}
+.plbl{padding:13px 16px 9px;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--b1);flex-shrink:0}
+.llist{flex:1;overflow-y:auto;scrollbar-width:none}
+.llist::-webkit-scrollbar{display:none}
+.li{display:flex;cursor:pointer;border-bottom:1px solid var(--b1);transition:background .2s;position:relative;overflow:hidden}
+.li:hover{background:rgba(201,169,110,.04)}
+.li.on{background:var(--gdim);border-left:2px solid var(--g)}
+.li-thumb{width:76px;height:64px;object-fit:cover;flex-shrink:0;background:var(--c3);display:block}
+.li-meta{padding:8px 10px;display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;flex:1}
+.li-price{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--g);white-space:nowrap}
+.li-name{font-size:10px;font-weight:500;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li-spec{font-size:9px;color:var(--t3)}
+.li-pill{position:absolute;top:5px;right:5px;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g);background:rgba(0,0,0,.75);border:1px solid var(--b1);border-radius:2px;padding:2px 5px}
+.agents{border-top:1px solid var(--b1);padding:12px 14px;flex-shrink:0}
+.agents-lbl{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);margin-bottom:9px}
+.ag{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.ag:last-child{margin-bottom:0}
+.ag img{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--b2);flex-shrink:0}
+.ag-name{font-size:10px;font-weight:500;color:var(--t1)}
+.ag-tel{font-size:9px;color:var(--g);margin-top:1px}
+
+/* CENTRE */
+.centre{display:flex;flex-direction:column;overflow:hidden;background:var(--c0)}
+.spec-bar{background:var(--c1);border-bottom:1px solid var(--b1);padding:9px 16px;display:flex;align-items:center;gap:0;flex-shrink:0;overflow:hidden}
+.pname{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--g);letter-spacing:1px;margin-right:10px;white-space:nowrap}
+.sdiv{width:1px;height:14px;background:var(--b1);flex-shrink:0;margin:0 9px}
+.si{display:flex;flex-direction:column;gap:1px;flex-shrink:0}
+.si-v{font-size:11px;font-weight:500;color:var(--t1)}
+.si-l{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3)}
+.mtag{margin-left:auto;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--g);background:var(--gdim);border:1px solid var(--b1);border-radius:2px;padding:4px 10px;flex-shrink:0}
+
+/* VIDEO */
+.video-wrap{flex:1;position:relative;background:#000;overflow:hidden;min-height:0}
+.video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;display:block}
+.video-wrap .photo-view{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block}
+
+/* THUMBS */
+.thumbs{height:62px;flex-shrink:0;display:flex;gap:3px;padding:3px;background:var(--c1);border-top:1px solid var(--b1);overflow-x:auto;scrollbar-width:none}
+.thumbs::-webkit-scrollbar{display:none}
+.th{height:56px;width:88px;object-fit:cover;flex-shrink:0;cursor:pointer;opacity:.45;border-radius:2px;border:1px solid transparent;background:var(--c3);transition:opacity .2s;display:block}
+.th:hover{opacity:.8}
+.th.on{opacity:1;border-color:var(--g)}
+.th-yt{position:relative;height:56px;width:88px;flex-shrink:0;cursor:pointer;border-radius:2px;border:1px solid transparent;overflow:hidden;transition:border-color .2s}
+.th-yt:hover{border-color:var(--b2)}
+.th-yt.on{border-color:var(--g)}
+.th-yt img{width:100%;height:100%;object-fit:cover;display:block;opacity:.7}
+.th-yt-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.th-yt-icon svg{width:18px;height:18px;fill:var(--g)}
+
+/* RIGHT */
+.right{background:var(--c2);border-left:1px solid var(--b1);display:flex;flex-direction:column;overflow:hidden}
+.alex-hdr{padding:12px 16px 10px;border-bottom:1px solid var(--b1);flex-shrink:0}
+.alex-row{display:flex;align-items:center;gap:11px;margin-bottom:10px}
+.alex-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gd),var(--g));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:var(--c0);flex-shrink:0;position:relative}
+.alex-online{position:absolute;bottom:1px;right:1px;width:9px;height:9px;background:#4CAF50;border-radius:50%;border:2px solid var(--c2)}
+.alex-name{font-size:12px;font-weight:500;letter-spacing:.5px}
+.alex-role{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-top:2px}
+.orb-row{display:flex;align-items:center;gap:12px}
+.orb{width:50px;height:50px;border-radius:50%;background:var(--c3);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .3s}
+.orb:hover{border-color:var(--b2)}
+.orb.listening{border-color:var(--g);animation:orbp 1.4s ease infinite}
+.orb.speaking{border-color:var(--gl)}
+@keyframes orbp{0%,100%{box-shadow:0 0 0 4px rgba(201,169,110,.1),0 0 0 9px rgba(201,169,110,.04)}50%{box-shadow:0 0 0 8px rgba(201,169,110,.07),0 0 0 16px rgba(201,169,110,.02)}}
+.orb svg{width:19px;height:19px;stroke:var(--g);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.orb-txt{flex:1;min-width:0}
+.orb-lbl{font-size:10px;font-weight:500;color:var(--t2);letter-spacing:.5px;margin-bottom:2px}
+.orb-stat{font-size:9px;color:var(--g);letter-spacing:1px;min-height:12px}
+.wv{display:flex;align-items:center;gap:2px;height:13px;margin-top:3px}
+.wb{width:3px;background:var(--g);border-radius:2px;height:3px;opacity:.2;transition:height .1s}
+.wb.on{opacity:1}
+.transcript{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px;min-height:0;scrollbar-width:thin;scrollbar-color:var(--b1) transparent}
+.transcript::-webkit-scrollbar{width:3px}
+.transcript::-webkit-scrollbar-thumb{background:var(--b1);border-radius:2px}
+.msg{display:flex;gap:8px;animation:fu .3s ease}
+@keyframes fu{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
+.av{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px}
+.av-ai{background:linear-gradient(135deg,var(--gd),var(--g));color:var(--c0);font-family:'Cormorant Garamond',serif;font-size:11px;font-style:italic}
+.av-u{background:var(--c4);border:1px solid var(--b1);color:var(--g);font-size:8px}
+.bbl{max-width:85%;padding:9px 13px;border-radius:3px;font-size:12px;line-height:1.75;font-weight:300}
+.bbl-ai{background:var(--c3);border:1px solid var(--b1);border-left:2px solid var(--g);color:#C8C0B4}
+.bbl-ai strong{color:var(--g);font-weight:500}
+.bbl-ai em{color:var(--gl);font-style:italic}
+.bbl-u{background:rgba(201,169,110,.07);border:1px solid var(--b2);color:var(--t1);text-align:right}
+.tdots{background:var(--c3);border:1px solid var(--b1);border-left:2px solid var(--g);padding:9px 13px;border-radius:3px;display:flex;gap:4px;align-items:center}
+.dt{width:5px;height:5px;background:var(--g);border-radius:50%;animation:bnc 1.2s ease infinite;opacity:.6}
+.dt:nth-child(2){animation-delay:.2s}.dt:nth-child(3){animation-delay:.4s}
+@keyframes bnc{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-4px);opacity:1}}
+.qrs{display:flex;flex-wrap:wrap;gap:5px;padding:0 14px 7px;flex-shrink:0}
+.qr{background:transparent;border:1px solid var(--b2);color:var(--gl);font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:.8px;padding:5px 10px;border-radius:2px;cursor:pointer;transition:all .2s}
+.qr:hover{background:var(--gdim);border-color:var(--g);color:var(--g)}
+.book-wrap{padding:5px 14px 9px;flex-shrink:0}
+.book-btn{width:100%;background:transparent;border:1px solid var(--g);color:var(--g);font-family:'Montserrat',sans-serif;font-size:9px;font-weight:600;letter-spacing:3px;text-transform:uppercase;padding:10px;border-radius:2px;cursor:pointer;transition:all .25s}
+.book-btn:hover{background:var(--g);color:var(--c0)}
+.inp-row{padding:7px 14px 11px;border-top:1px solid var(--b1);display:flex;gap:7px;align-items:flex-end;flex-shrink:0}
+.chat-inp{flex:1;background:var(--c3);border:1px solid var(--b1);color:var(--t1);font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;padding:9px 12px;border-radius:3px;outline:none;resize:none;min-height:38px;max-height:70px;line-height:1.5;transition:border-color .2s}
+.chat-inp::placeholder{color:#3A3630}
+.chat-inp:focus{border-color:var(--b2)}
+.snd{width:38px;height:38px;background:var(--g);border:none;border-radius:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+.snd:hover{background:var(--gl)}
+.snd:active{transform:scale(.95)}
+.snd svg{width:12px;height:12px;fill:var(--c0)}
+
+/* MODAL */
+.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:100;align-items:center;justify-content:center}
+.mbg.open{display:flex}
+.mbox{background:var(--c2);border:1px solid var(--b2);border-radius:4px;padding:26px;width:min(420px,94vw);max-height:90vh;overflow-y:auto;position:relative}
+.mx{position:absolute;top:12px;right:14px;background:transparent;border:none;color:var(--t3);font-size:18px;cursor:pointer;line-height:1}
+.mx:hover{color:var(--g)}
+.mt{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--g);letter-spacing:2px;margin-bottom:3px}
+.msub{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);margin-bottom:20px}
+.fr{display:flex;flex-direction:column;gap:5px;margin-bottom:11px}
+.fr label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3)}
+.fr input,.fr select,.fr textarea{background:var(--c3);border:1px solid var(--b1);color:var(--t1);font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;padding:9px 11px;border-radius:2px;outline:none;width:100%;transition:border-color .2s}
+.fr input:focus,.fr select:focus,.fr textarea:focus{border-color:var(--b2)}
+.fr select option{background:var(--c3)}
+.fr textarea{resize:none;height:56px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.m-btn{width:100%;background:var(--g);border:none;color:var(--c0);font-family:'Montserrat',sans-serif;font-size:9px;font-weight:600;letter-spacing:3px;text-transform:uppercase;padding:12px;border-radius:2px;cursor:pointer;margin-top:7px;transition:background .25s}
+.m-btn:hover{background:var(--gl)}
+.mags{display:flex;gap:12px;margin-top:16px;padding-top:14px;border-top:1px solid var(--b1);flex-wrap:wrap}
+.mag{display:flex;gap:9px;align-items:center}
+.mag img{width:34px;height:34px;border-radius:50%;object-fit:cover;border:1px solid var(--b2)}
+.mag-name{font-size:10px;font-weight:500;color:var(--t1)}
+.mag-tel{font-size:9px;color:var(--g);margin-top:1px}
+.suc{text-align:center;padding:8px 0}
+.suc svg{width:36px;height:36px;stroke:var(--g);fill:none;stroke-width:1.5;margin-bottom:10px}
+.suc-t{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--g);margin-bottom:8px}
+.suc-b{font-size:11px;color:var(--t2);line-height:1.7}
+
+/* SETUP */
+.setup{position:fixed;inset:0;background:rgba(8,8,8,.97);z-index:200;display:flex;align-items:center;justify-content:center}
+.sc{background:var(--c2);border:1px solid var(--b2);border-radius:4px;padding:32px;width:min(460px,92vw)}
+.sl{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;letter-spacing:5px;color:var(--g);text-transform:uppercase;margin-bottom:4px}
+.ss{font-size:8px;letter-spacing:3px;color:var(--t3);text-transform:uppercase;margin-bottom:22px}
+.s-lbl{font-size:11px;font-weight:500;color:var(--t1);margin-bottom:5px}
+.s-desc{font-size:10px;color:var(--t3);line-height:1.65;margin-bottom:11px}
+.s-inp{background:var(--c3);border:1px solid var(--b1);color:var(--t1);font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;padding:11px 14px;border-radius:2px;outline:none;width:100%;margin-bottom:5px;transition:border-color .2s}
+.s-inp:focus{border-color:var(--b2)}
+.s-err{font-size:10px;color:#E57373;min-height:14px;margin-bottom:3px}
+.s-btn{width:100%;background:var(--g);border:none;color:var(--c0);font-family:'Montserrat',sans-serif;font-size:9px;font-weight:600;letter-spacing:3px;text-transform:uppercase;padding:13px;border-radius:2px;cursor:pointer;transition:background .25s;margin-top:5px}
+.s-btn:hover{background:var(--gl)}
+.s-note{font-size:9px;color:var(--t3);line-height:1.6;margin-top:12px;padding:10px 14px;background:var(--gdim);border:1px solid var(--b1);border-radius:2px}
+.s-note a{color:var(--g)}
+</style>
+</head>
+<body>
+
+<!-- SETUP -->
+<div class="setup" id="setup">
+  <div class="sc">
+    <div class="sl">Baroque Real Estate</div>
+    <div class="ss">Copperleaf Golf & Country Estate · AI Concierge</div>
+    <div class="s-lbl">Enter your Anthropic API key to activate Alexandra</div>
+    <div class="s-desc">Get a free key at <a href="https://console.anthropic.com" target="_blank" style="color:var(--g)">console.anthropic.com</a> → API Keys → Create Key. Stored in this session only — never shared.</div>
+    <input class="s-inp" type="password" id="keyInp" placeholder="sk-ant-api03-…" onkeydown="if(event.key==='Enter')go()">
+    <div class="s-err" id="sErr"></div>
+    <button class="s-btn" onclick="go()">Activate AI Concierge</button>
+    <div class="s-note">This page must be accessed via an <strong style="color:var(--g)">https://</strong> address for the video and AI to work. See INSTRUCTIONS.txt — takes 30 seconds on Netlify Drop (free).</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app">
+  <header class="topbar">
+    <div class="brand">Baroque Real Estate</div>
+    <div class="bsep"></div>
+    <div class="bsub">Copperleaf Golf & Country Estate · Luxury Collection</div>
+    <div class="topbar-r"><div class="badge"><div class="bdot"></div>Alexandra · AI Concierge</div></div>
+  </header>
+
+  <aside class="left">
+    <div class="plbl">Available Properties</div>
+    <div class="llist" id="llist"></div>
+    <div class="agents">
+      <div class="agents-lbl">Your Agents</div>
+      <div class="ag">
+        <img src="https://www.baroquerealestate.com/motorAgentImages/250/1831531.jpg" alt="Ronel">
+        <div><div class="ag-name">Ronel Brashaw</div><div class="ag-tel">+27 83 236 6300</div></div>
+      </div>
+      <div class="ag">
+        <img src="https://www.baroquerealestate.com/motorAgentImages/250/1831577.jpg" alt="Robyn">
+        <div><div class="ag-name">Robyn Minards</div><div class="ag-tel">+27 73 937 0108</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="centre">
+    <div class="spec-bar" id="specBar"></div>
+    <div class="video-wrap" id="videoWrap"></div>
+    <div class="thumbs" id="thumbs"></div>
+  </main>
+
+  <aside class="right">
+    <div class="alex-hdr">
+      <div class="alex-row">
+        <div class="alex-av">A<div class="alex-online"></div></div>
+        <div><div class="alex-name">Alexandra</div>
+        <div class="alex-role">Baroque Real Estate · Property Concierge</div></div>
+      </div>
+      <div class="orb-row">
+        <div class="orb" id="orb" onclick="toggleListen()">
+          <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        </div>
+        <div class="orb-txt">
+          <div class="orb-lbl">Tap to speak with Alexandra</div>
+          <div class="orb-stat" id="orbStat"></div>
+          <div class="wv"><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="transcript" id="transcript"></div>
+    <div class="qrs" id="qrs"></div>
+    <div class="book-wrap"><button class="book-btn" onclick="openModal()">✦ Book a Private Viewing</button></div>
+    <div class="inp-row">
+      <textarea class="chat-inp" id="chatInp" placeholder="Ask Alexandra anything…" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="snd" onclick="sendText()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+    </div>
+  </aside>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="mbg" id="mbg" onclick="outClose(event)">
+  <div class="mbox">
+    <button class="mx" onclick="closeModal()">&#x2715;</button>
+    <div id="mbody">
+      <div class="mt">Request a Private Viewing</div>
+      <div class="msub" id="mSubLbl">Copperleaf Estate · Baroque Real Estate</div>
+      <div class="f2">
+        <div class="fr"><label>First Name</label><input type="text" id="fFn" placeholder="First name"></div>
+        <div class="fr"><label>Last Name</label><input type="text" id="fLn" placeholder="Last name"></div>
+      </div>
+      <div class="fr"><label>Email Address</label><input type="email" id="fEm" placeholder="your@email.com"></div>
+      <div class="fr"><label>Contact Number</label><input type="tel" id="fPh" placeholder="+27 ..."></div>
+      <div class="f2">
+        <div class="fr"><label>Preferred Date</label><input type="date" id="fDt"></div>
+        <div class="fr"><label>Preferred Time</label>
+          <select id="fTm"><option value="">Select time</option>
+            <option>08:00 – 09:00</option><option>09:00 – 10:00</option>
+            <option>10:00 – 11:00</option><option>11:00 – 12:00</option>
+            <option>14:00 – 15:00</option><option>15:00 – 16:00</option>
+            <option>16:00 – 17:00</option>
+          </select>
+        </div>
+      </div>
+      <div class="fr"><label>Message (optional)</label><textarea id="fMsg" placeholder="Any questions or requirements…"></textarea></div>
+      <button class="m-btn" onclick="submitBooking()">Confirm Viewing Request</button>
+      <div class="mags">
+        <div class="mag"><img src="https://www.baroquerealestate.com/motorAgentImages/250/1831531.jpg" alt="Ronel"><div><div class="mag-name">Ronel Brashaw</div><div class="mag-tel">+27 83 236 6300</div></div></div>
+        <div class="mag"><img src="https://www.baroquerealestate.com/motorAgentImages/250/1831577.jpg" alt="Robyn"><div><div class="mag-name">Robyn Minards</div><div class="mag-tel">+27 73 937 0108</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const LISTINGS=[
+  {id:0,ref:'7498497',name:'Fairway Luxury Residence',price:'R 6,200,000',beds:4,baths:4,garages:3,floor:'396m²',erf:'1,245m²',levy:3650,mandate:'Sole Mandate',ytId:'w9YhPbdInMQ',
+   thumbs:['15182608','15182609','15182610','15182611','15182612','15182613'],
+   system:'You are Alexandra, warm and sophisticated luxury property concierge at Baroque Real Estate — boutique agency specialising in Copperleaf Golf & Country Estate, Centurion, South Africa.\nPROPERTY: Fairway Luxury Residence | Ref #7498497 | SOLE MANDATE\nPrice: R6,200,000 | Beds:4 | Baths:4+guest WC | Garages:3 electric | Floor:±396m² | Stand:±1,245m² | Levy:R3,650/mo | Rates:±R2,200/mo\nFeatures: Solar panels, backup inverter, water tank, heated pool (safety net), gas kitchen, fibre, pets allowed, covered patio with built-in braai\nRooms: Master — A/C, sliding door to garden, walk-in closet, built-in cupboards, TV port. Beds 2-4 — sliding doors to garden, built-in cupboards (Bed 4 also A/C). Main en-suite — freestanding bath, double basin. Kitchen — open plan, gas hob & oven, granite tops, centre island, scullery, breakfast nook. Living room — open plan, atrium feature, patio, TV port. Bar/rec — open plan bar counter, patio. Study — A/C, blinds. Pool — safety net. Garden — irrigation, immaculate.'},
+  {id:1,ref:'7462835',name:'Private Cul-de-Sac Golf Manor',price:'R 13,900,000',beds:4,baths:4,garages:4,floor:'732m²',erf:'1,505m²',levy:3650,mandate:'Joint Mandate',ytId:'QgsKbcda2Zc',
+   thumbs:['15080370','15080371','15080372','15080373','15080374','15080375'],
+   system:'You are Alexandra, warm and sophisticated luxury property concierge at Baroque Real Estate.\nPROPERTY: Private Cul-de-Sac Golf Manor | Ref #7462835 | JOINT MANDATE\nPrice: R13,900,000 | Beds:4 | Baths:4+guest WC | Garages:4 electric | Floor:±732m² | Stand:±1,505m² | Levy:R3,650/mo | Rates:±R3,500/mo\nFeatures: Cinema room (automated screen & projector), temperature-controlled wine room, borehole, solar panels, backup inverter, pizza oven with boma & fire pit, built-in bar, double-storey, underfloor heating, 3 fireplaces, central vacuum, sprinkler system, staff quarters, walk-in fridge, pyjama lounge\nRooms: All 4 beds — walk-in closets & balconies (Bed 3 loft-style). Double-volume living room with fireplace & built-in TV unit. Dining room with fireplace. Kitchen — walk-in fridge, gas hob, island, pantry, scullery. Cinema room. Wine room. Braai room with pizza oven. Boma with fire pit. Pyjama lounge upstairs.'},
+  {id:2,ref:'7452295',name:'Modern Cinema & Gym Residence',price:'R 8,500,000',beds:5,baths:5,garages:4,floor:'600m²',erf:'879m²',levy:3650,mandate:'Sole Mandate',ytId:'JMCMbTwAkEM',
+   thumbs:['15065545','15065546','15065547','15065548','15065549','15065550'],
+   system:'You are Alexandra, warm and sophisticated luxury property concierge at Baroque Real Estate.\nPROPERTY: Modern Cinema & Gym Residence | Ref #7452295 | SOLE MANDATE\nPrice: R8,500,000 | Beds:5 | Baths:5 all en-suite+guest WC | Garages:4 | Floor:±600m² | Stand:±879m² | Levy:R3,650/mo | Rates:±R2,800/mo\nFeatures: Double-storey, north-facing, dedicated gym, cinema room, pyjama lounge, built-in braai, all 5 beds en-suite, 2 staff quarters, 24-hour guard house, pets allowed, pool, near-completion new build — buyer personalises'},
+  {id:3,ref:'7468601',name:"Entertainer's Greenbelt Home",price:'R 4,800,000',beds:4,baths:4,garages:2,floor:'304m²',erf:'749m²',levy:3650,mandate:'Joint Mandate',ytId:'Zboutne85Mg',
+   thumbs:['15095843','15095844','15095845','15095846','15095847','15095848'],
+   system:"You are Alexandra, warm and sophisticated luxury property concierge at Baroque Real Estate.\nPROPERTY: Entertainer's Greenbelt Home | Ref #7468601 | JOINT MANDATE\nPrice: R4,800,000 | Beds:4 | Baths:4 all en-suite | Garages:2 electric | Floor:±304m² | Stand:±749m² on 2 greenbelts | Levy:R3,650/mo | Rates:R4,000/mo\nFeatures: Heated pool (safety net), solar panels, solar geyser, backup inverter, gas kitchen (granite tops, centre island, gas hob & oven, scullery, pantry), built-in bar room with braai & prep area, staff quarters, fibre, A/C throughout, pets allowed. All 4 beds en-suite. Master — walk-in closet, vanity, king bed."}
+];
+
+const SUFFIX='\n\nCOPPERLEAF ESTATE: Premier golf estate, Centurion, Gauteng. 18-hole Ernie Els championship course. 24-hour biometric security. Clubhouse, fine dining, spa, wellness, tennis, lifestyle centre. ~1,000 stands. Close to N1/N14, top private schools, Centurion Mall.\nAGENTS: Ronel Brashaw +27 83 236 6300 ronel@baroquerealestate.com | Robyn Minards +27 73 937 0108 robyn@baroquerealestate.com\nPERSONA: Warm, elegant, confident. Vivid evocative language. Qualify buyers naturally (timeline, lifestyle, family, budget). Handle objections graciously. Highlight investment value and Copperleaf exclusivity. Suggest private viewing at the right moment. 2-4 paragraphs — voice conversation. **bold** for specs. *italics* for evocative phrases.\nAfter EVERY response append exactly: [[QR:"Option A","Option B","Option C"]]\nNever break character.';
+
+const IMG='https://www.baroquerealestate.com/motorImages9/400/';
+const IMG8='https://www.baroquerealestate.com/motorImages9/800/';
+let antKey='',curIdx=0,history=[],busy=false,recog=null,listening=false,wt=null;
+
+function go(){
+  const k=document.getElementById('keyInp').value.trim();
+  const e=document.getElementById('sErr');
+  if(!k||k.length<20){e.textContent='Please enter your full API key.';return;}
+  antKey=k;e.textContent='';
+  document.getElementById('setup').style.display='none';
+  buildList();selectListing(0);
+}
+
+function buildList(){
+  const el=document.getElementById('llist');el.innerHTML='';
+  LISTINGS.forEach((l,i)=>{
+    const d=document.createElement('div');
+    d.className='li'+(i===0?' on':'');d.onclick=()=>selectListing(i);
+    d.innerHTML=`<img class="li-thumb" src="${IMG}${l.thumbs[0]}.jpg" alt="${l.name}" onerror="this.style.background='#202020'">
+      <div class="li-meta"><div class="li-price">${l.price}</div><div class="li-name">${l.name}</div><div class="li-spec">${l.beds} bed · ${l.baths} bath · ${l.floor}</div></div>
+      <div class="li-pill">${l.mandate.split(' ')[0]}</div>`;
+    el.appendChild(d);
+  });
+}
+
+function selectListing(i){
+  curIdx=i;history=[];
+  document.querySelectorAll('.li').forEach((el,j)=>el.classList.toggle('on',j===i));
+  const l=LISTINGS[i];
+
+  document.getElementById('specBar').innerHTML=`
+    <div class="pname">${l.name}</div>
+    <div class="sdiv"></div><div class="si"><span class="si-v">${l.price}</span><span class="si-l">Price</span></div>
+    <div class="sdiv"></div><div class="si"><span class="si-v">${l.beds}</span><span class="si-l">Beds</span></div>
+    <div class="sdiv"></div><div class="si"><span class="si-v">${l.baths}</span><span class="si-l">Baths</span></div>
+    <div class="sdiv"></div><div class="si"><span class="si-v">${l.garages}</span><span class="si-l">Garages</span></div>
+    <div class="sdiv"></div><div class="si"><span class="si-v">${l.floor}</span><span class="si-l">Floor</span></div>
+    <div class="sdiv"></div><div class="si"><span class="si-v">${l.erf}</span><span class="si-l">Stand</span></div>
+    <div class="sdiv"></div><div class="si"><span class="si-v">R${l.levy.toLocaleString()}/mo</span><span class="si-l">Levy</span></div>
+    <div class="mtag">${l.mandate}</div>`;
+
+  loadYT(l.ytId,false);
+
+  const strip=document.getElementById('thumbs');strip.innerHTML='';
+  const ytT=document.createElement('div');ytT.className='th-yt on';
+  ytT.innerHTML=`<img src="https://img.youtube.com/vi/${l.ytId}/mqdefault.jpg" alt="Video"><div class="th-yt-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>`;
+  ytT.onclick=()=>{strip.querySelectorAll('.th,.th-yt').forEach(t=>t.classList.remove('on'));ytT.classList.add('on');loadYT(l.ytId,true);};
+  strip.appendChild(ytT);
+  l.thumbs.forEach((id,idx)=>{
+    const t=document.createElement('img');t.className='th';t.loading='lazy';
+    t.src=`${IMG}${id}.jpg`;t.alt=`Photo ${idx+1}`;t.onerror=()=>t.style.display='none';
+    t.onclick=()=>{
+      strip.querySelectorAll('.th,.th-yt').forEach(th=>th.classList.remove('on'));t.classList.add('on');
+      const vw=document.getElementById('videoWrap');vw.innerHTML='';
+      const img=document.createElement('img');img.className='photo-view';
+      img.src=`${IMG8}${id}.jpg`;img.alt=`Photo ${idx+1}`;vw.appendChild(img);
+    };
+    strip.appendChild(t);
+  });
+
+  document.getElementById('mSubLbl').textContent=`${l.name} · Ref #${l.ref}`;
+  document.getElementById('transcript').innerHTML='';
+  document.getElementById('qrs').innerHTML='';
+  setS('');
+
+  const welcome=`<strong>Welcome to your private tour of ${l.name}</strong><br><br>`
+    +`Good day — I'm Alexandra, your personal property concierge at Baroque Real Estate. `
+    +`*What a genuine pleasure to have you here.*<br><br>`
+    +`The video tour is playing in the panel alongside. I'm here to guide you through everything as you watch — `
+    +`ask me anything about the rooms, the features, the estate, or the investment.<br><br>`
+    +`This is a <strong>${l.mandate}</strong> at <strong>${l.price}</strong>. `
+    +`Shall I walk you through the highlights, or is there something specific you'd like to know first?`;
+
+  appendMsg('ai',welcome,['Walk me through the highlights','Tell me about the outdoor spaces','What are the key features?','Tell me about Copperleaf Estate']);
+  history.push({role:'assistant',content:welcome.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()});
+  speak(`Good day. I'm Alexandra, your personal property concierge at Baroque Real Estate. Welcome to your private tour of ${l.name}, priced at ${l.price} as a ${l.mandate}. The video tour is playing alongside — I'm here to guide you through everything. Shall I walk you through the highlights, or is there something specific you'd like to know first?`);
+}
+
+function loadYT(ytId,autoplay){
+  const vw=document.getElementById('videoWrap');vw.innerHTML='';
+  const fr=document.createElement('iframe');
+  fr.setAttribute('allowfullscreen','');
+  fr.setAttribute('allow','accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+  fr.src=`https://www.youtube.com/embed/${ytId}?rel=0&modestbranding=1&color=white&iv_load_policy=3${autoplay?'&autoplay=1':''}`;
+  vw.appendChild(fr);
+}
+
+function appendMsg(role,html,qrs=[]){
+  const t=document.getElementById('transcript');
+  document.getElementById('qrs').innerHTML='';
+  const w=document.createElement('div');w.className='msg'+(role==='user'?' user':'');
+  const av=document.createElement('div');av.className='av '+(role==='ai'?'av-ai':'av-u');av.textContent=role==='ai'?'A':'You';
+  const b=document.createElement('div');b.className='bbl '+(role==='ai'?'bbl-ai':'bbl-u');b.innerHTML=html;
+  w.appendChild(av);w.appendChild(b);t.appendChild(w);
+  if(qrs.length&&role==='ai'){
+    const qel=document.getElementById('qrs');
+    qrs.forEach(q=>{const btn=document.createElement('button');btn.className='qr';btn.textContent=q;btn.onclick=()=>{qel.innerHTML='';processMsg(q);};qel.appendChild(btn);});
+  }
+  t.scrollTop=t.scrollHeight;
+}
+
+function showTyping(){
+  const t=document.getElementById('transcript');
+  const w=document.createElement('div');w.className='msg';w.id='typr';
+  const av=document.createElement('div');av.className='av av-ai';av.textContent='A';
+  const d=document.createElement('div');d.className='tdots';
+  d.innerHTML='<div class="dt"></div><div class="dt"></div><div class="dt"></div>';
+  w.appendChild(av);w.appendChild(d);t.appendChild(w);t.scrollTop=t.scrollHeight;
+}
+function hideTyping(){const e=document.getElementById('typr');if(e)e.remove();}
+
+async function processMsg(text){
+  if(!text.trim()||busy)return;
+  appendMsg('user',text);
+  history.push({role:'user',content:text});
+  busy=true;setS('Alexandra is thinking…');showTyping();
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':antKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-opus-4-5',max_tokens:900,system:LISTINGS[curIdx].system+SUFFIX,messages:history.slice(-16)})
+    });
+    if(!res.ok){
+      const errData=await res.json().catch(()=>({}));
+      const errMsg=errData.error?.message||'';
+      const errType=errData.error?.type||'';
+      if(res.status===401||errType==='authentication_error')throw new Error('AUTH:'+errMsg);
+      if(res.status===429)throw new Error('RATE');
+      throw new Error('HTTP '+res.status+': '+errMsg);
+    }
+    const data=await res.json();
+    hideTyping();
+    const raw=(data.content||[]).map(b=>b.text||'').join('');
+    if(!raw)throw new Error('Empty');
+    let reply=raw,qrs=[];
+    const m=raw.match(/\[\[QR:(.*?)\]\]/s);
+    if(m){try{qrs=JSON.parse('['+m[1]+']');}catch(e){}reply=raw.replace(/\[\[QR:.*?\]\]/s,'').trim();}
+    const html=reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+    appendMsg('ai',html,qrs);
+    history.push({role:'assistant',content:raw});
+    speak(reply);
+  }catch(err){
+    hideTyping();busy=false;setS('Tap mic to respond');
+    const m=err.message||'';
+    appendMsg('ai',
+      m.startsWith('AUTH:')?'Authentication failed: '+m.slice(5)+' — Please check your API key has billing enabled at console.anthropic.com/settings/billing'
+      :m==='RATE'?'Rate limit reached — please wait a moment and try again.'
+      :'Error: '+m+' — If this persists, check console.anthropic.com/settings/billing has a payment method added.',
+      ['Tell me about this property','What are the key features?','Book a private viewing']);
+  }
+}
+
+function sendText(){const i=document.getElementById('chatInp'),t=i.value.trim();if(!t||busy)return;i.value='';i.style.height='auto';processMsg(t);}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendText();}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,70)+'px';}
+
+function setS(m){document.getElementById('orbStat').textContent=m;}
+function waveAnim(on){
+  clearInterval(wt);const bars=[...document.querySelectorAll('.wb')];
+  if(!on){bars.forEach(b=>{b.style.height='3px';b.classList.remove('on')});return;}
+  bars.forEach(b=>b.classList.add('on'));
+  wt=setInterval(()=>bars.forEach(b=>{b.style.height=Math.floor(Math.random()*12+3)+'px';}),120);
+}
+
+function initRecog(){
+  if(recog)return;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){setS('Voice not supported — please type');return;}
+  recog=new SR();recog.continuous=false;recog.interimResults=false;recog.lang='en-ZA';
+  recog.onstart=()=>{setS('Listening — speak now…');waveAnim(true);};
+  recog.onresult=e=>{stopListen();processMsg(e.results[0][0].transcript);};
+  recog.onerror=e=>{stopListen();if(e.error!=='aborted')setS('Could not hear — try again');};
+  recog.onend=()=>{if(listening)stopListen();};
+}
+function toggleListen(){if(busy)return;if(!recog)initRecog();if(!recog)return;listening?stopListen():startListen();}
+function startListen(){listening=true;document.getElementById('orb').classList.add('listening');try{recog.start();}catch(e){}}
+function stopListen(){listening=false;document.getElementById('orb').classList.remove('listening');waveAnim(false);try{recog.stop();}catch(e){}setS('');}
+
+function speak(text){
+  const clean=text.replace(/<[^>]+>/g,'').replace(/\*\*/g,'').replace(/\*/g,'').replace(/\[\[.*?\]\]/gs,'').slice(0,1200);
+  if(!window.speechSynthesis){busy=false;setS('Tap mic to respond');return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(clean);
+  u.lang='en-ZA';u.rate=0.91;u.pitch=1.04;
+  const v=speechSynthesis.getVoices().find(v=>/samantha|karen|victoria|zira|fiona|female/i.test(v.name));
+  if(v)u.voice=v;
+  document.getElementById('orb').classList.add('speaking');
+  waveAnim(true);setS('Alexandra is speaking…');
+  const done=()=>{document.getElementById('orb').classList.remove('speaking');waveAnim(false);busy=false;setS('Tap mic to respond');};
+  u.onend=done;u.onerror=done;
+  speechSynthesis.speak(u);
+}
+if(speechSynthesis.onvoiceschanged!==undefined){speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();}
+speechSynthesis.getVoices();
+
+function openModal(){document.getElementById('mbg').classList.add('open');}
+function closeModal(){document.getElementById('mbg').classList.remove('open');}
+function outClose(e){if(e.target===document.getElementById('mbg'))closeModal();}
+function submitBooking(){
+  const fn=document.getElementById('fFn').value.trim(),ln=document.getElementById('fLn').value.trim();
+  const em=document.getElementById('fEm').value.trim(),ph=document.getElementById('fPh').value.trim();
+  const dt=document.getElementById('fDt').value,tm=document.getElementById('fTm').value;
+  if(!fn||!ln||!em||!ph||!dt||!tm){alert('Please complete all required fields.');return;}
+  const l=LISTINGS[curIdx];
+  document.getElementById('mbody').innerHTML=`<div class="suc">
+    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    <div class="suc-t">Viewing Request Confirmed</div>
+    <div class="suc-b">Thank you, ${fn}. Your private viewing request for<br>
+    <strong style="color:var(--g)">${l.name}</strong><br>has been received.<br>
+    Ronel or Robyn will confirm within 24 hours.<br><br>
+    <strong style="color:var(--g)">${dt} · ${tm}</strong><br><br>
+    <a href="tel:27832366300" style="color:var(--g)">Ronel Brashaw · +27 83 236 6300</a><br>
+    <a href="tel:27739370108" style="color:var(--g)">Robyn Minards · +27 73 937 0108</a></div></div>`;
+  setTimeout(closeModal,9000);
+}
+</script>
+</body>
+</html>
